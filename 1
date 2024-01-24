@@ -1,0 +1,14 @@
+You have a table with four columns: CustomerID, ProductID,EventID and Date. Write a sql query to find for each customer and product, how many events number 2 the customer had before the first occurence of the event 3. Use cte please
+
+
+WITH Event3Times AS (
+    SELECT CustomerID, ProductID, MIN(Date) as FirstEvent3Time
+    FROM Events
+    WHERE EventID = 3
+    GROUP BY CustomerID, ProductID
+)
+
+SELECT e.CustomerID, e.ProductID, COUNT(e2.EventID) AS Event2BeforeEvent3
+FROM Event3Times e
+LEFT JOIN Events e2 ON e.CustomerID = e2.CustomerID AND e.ProductID = e2.ProductID AND e2.EventID = 2 AND e2.Date < e.FirstEvent3Time
+GROUP BY e.CustomerID, e.ProductID;
